@@ -1,0 +1,69 @@
+# Example input file for  a quasidynamic earthquake cycle simulation for a spring slider
+# with linear elastic off-fault material.
+
+#======================================================================
+# define the domain and problem type
+
+# set up the computational domain
+# note that if Nz = 1 then the problem is equivalent to the spring slider
+Ny = 201 # points in y-direction
+Nz = 1 # points in z-direction
+Ly = 30 # (km) horizontal domain size
+Lz = 30 # (km) vertical domain size (not used for this example)
+vL = 1e-9 # (m/s) loading velocity
+bCoordTrans = 5 # controls grid stretching perpendicular to the fault: larger b means more grid stretching
+
+# specify what problem to simulate
+systemEvolutionType = transient # solve for steady-state or time evolution of the system
+bulkDeformationType = linearElastic # off-fault constitutive law
+#momentumBalanceType = quasidynamic # form of the momentum balance equation
+guessSteadyStateICs = 1 # estimate steady-state initial conditions
+
+
+#======================================================================
+# rate-and-state parameters
+
+stateLaw = agingLaw # state variable evolution law
+
+DcVals = [30e-3 30e-3] # (m) state evolution distance
+DcDepths = [0 60] # (km)
+
+aVals = [0.01 0.01]  # direct effect parameter
+aDepths = [0 60]
+bVals = [0.02 0.02]  # state evolution effect parameter
+bDepths = [0 60]
+
+sNVals = [50 50] # (MPa) effective normal stress
+sNDepths = [0 60] # (km)
+
+#======================================================================
+# off-fault material parameters
+
+muVals = [30 30] # (GPa) shear modulus
+muDepths = [0 60] # (km)
+rhoVals = [3 3] # (g/cm^3) rock density
+rhoDepths = [0 60] # (km)
+
+#======================================================================
+# settings for time integration
+
+stride1D = 1 # number of time steps between output of 1D fields
+stride2D = 5 # number of time steps between output of 2D fields
+maxStepCount = 1e8 # maximum number of time steps
+initTime = 0 # (s) initial time
+maxTime = 1.5e11 # (s) final time
+maxDeltaT = 1e12 # (s) size of maximum time step
+timeStepTol = 1e-5 # absolute tolerance for time integration
+timeIntInds = [psi slip] # variables to use to compute time step
+
+# directory for output
+outputDir = data/ex1_
+
+# settings for checkpoints
+saveChkpts = 1 # enable checkpointing if 1, disable if 0
+restartFromChkpt = 1 # allow to restart from previous checkpoint if 1, ignore previous checkpoint if 0
+retartFromChkptSS = 1 # allow to restart from previous checkpoint if 1, ignore previous checkpoint if 0
+strideChkpt = 300 # time step interval at which to write checkpoint files
+
+
+

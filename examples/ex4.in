@@ -1,0 +1,116 @@
+
+# Example input file for a 2D steady-state thermomechanical power-law
+# viscoelastic simulation.
+# Demonstrates how to use the fixed-point iteration method to estimate
+# steady-state conditions, including the steady state heat equation.
+# Note that there are no earthquake cycles in this simulation.
+
+#======================================================================
+# define the domain and problem type
+
+# set up the computational domain
+Ny = 301 # points in y-direction
+Nz = 351 # points in z-direction
+Ly = 500 # (km) horizontal domain size
+Lz = 500 # (km) vertical domain size
+bCoordTrans = 13.5 # controls grid stretching perpendicular to the fault: larger b means more grid stretching
+
+# specify what problem to simulate
+bulkDeformationType = powerLaw
+momentumBalanceType = quasidynamic
+
+# whether or not to estimate steady state initial conditions
+guessSteadyStateICs = 1
+
+#=======================================================================
+# rate-and-state parameters
+
+stateLaw = agingLaw # state variable evolution law
+v0 = 1e-9
+
+DcVals = [1 1] # (m)
+DcDepths = [0 60] # (km)
+
+# from Blanpied 1991 for a-b, 1995 for a, assuming 30 K/km
+aVals = [0.0135 0.0300 0.0700 0.2652]
+aDepths = [0 11.0000 19.3333 60]
+bVals = [0.0230 0.0379 0.0350 0.0375 0.0497]
+bDepths = [0 10 11 19.3333 60]
+
+sNVals = [50 50] # (MPa)
+sNDepths = [0 60] # (km)
+sNVals = [0 267.4] # (MPa) effective normal stress, some overpressure, lambda = 0.8
+sNDepths = [0 60]
+sN_floor = 5.5; # MPa
+
+#=======================================================================
+# off-fault material parameters
+
+# algorithm for momentum balance equation
+linSolver = MUMPSCHOLESKY
+
+muVals = [30 30] # (GPa) shear modulus
+muDepths = [0 60] # (km)
+rhoVals = [3 3] # (g/cm^3)
+rhoDepths = [0 60] # (km)
+
+# power law properties: wet feldspar
+AVals = [1585 1585]
+ADepths = [0 100]
+BVals = [4.157e4 4.157e4]
+BDepths = [0 100]
+nVals = [3 3]
+nDepths = [0 100]
+
+maxEffVisc = 1e18 # GPa s
+
+#=======================================================================
+# off-fault material parameters
+
+# heat equation properties
+heatFieldsDistribution = layered
+kVals = [1.89e-9 1.89e-9]  # crustal conductivity (km^2 kPa/K/s)
+kDepths = [0 60]
+hVals = [0 0]
+hDepths = [0 60]
+cVals = [900 900] # in m^2/s^2/K = J/g/K,  for granite, J/K/g
+cDepths = [0 60]
+
+Nz_lab = 251
+TVals = [2.83150000e+02 1.48815000e+03 1.48815725e+03 1.62315000e+03]
+TDepths = [0.00 5.00000000e+01 5.00241791e+01 5.00000000e+02]
+
+# width of frictional shear zone
+wVals = [10 10]  # (m)
+wDepths = [0 500]
+
+thermalCoupling = coupled
+heatEquationType = transient
+withViscShearHeating = yes
+withFrictionalHeating = yes
+withRadioHeatGeneration = yes
+
+#=======================================================================
+# settings for time integration
+
+timeIntegrator = RK43_WBE
+stride1D = 10 # how often to write out fields that live on the fault
+stride2D = 20 # how often to write out body fields
+maxStepCount = 1e8 # maximum number of time steps
+initTime = 0 # (s) initial time
+maxTime = 1e12 # (s) final time
+initDeltaT = 1e-3 # (s) size of initial time step
+minDeltaT = 1e-3 # (s) size of minimum time step
+maxDeltaT = 1e12 # (s) size of maximum time step
+timeStepTol = 1e-7 # absolute tolerance for time integration
+timeIntInds = [psi slip] # variables to use to compute time step
+
+
+# directory for output
+outputDir = data/ex4_
+
+
+
+
+
+
